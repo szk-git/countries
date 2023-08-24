@@ -79,9 +79,13 @@ jobs:
       - name: Grant execute permission for build-docker.sh
         run: chmod +x build-docker.sh
       - name: Build Docker image
-        run: |
-          ./build-docker.sh
-      - name: Push Docker image (optional)
+        run: ./build-docker.sh
+
+  docker-push:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push Docker image
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker tag countries-image:latest kristofs577/countries-image:latest
