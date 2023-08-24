@@ -1,4 +1,4 @@
-package com.countries.countries;
+package com.countries;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
