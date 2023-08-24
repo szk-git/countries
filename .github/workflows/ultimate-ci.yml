@@ -85,7 +85,7 @@ jobs:
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker tag countries-image:latest ${{ secrets.DOCKER_USERNAME }}/countries-image:latest
-          docker push $DOCKER_USERNAME/countries-image:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/countries-image:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
