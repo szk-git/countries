@@ -14,7 +14,16 @@ permissions:
   security-events: write
 
 jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup Docker environment
+        run: |
+          docker system prune -af
+          docker rmi $(docker images -aq) -f
+
   analyze:
+    needs: cleanup
     name: Analyze
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
@@ -65,7 +74,7 @@ jobs:
         uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25
         with:
           arguments: test
-          
+
   docker-build:
     needs: test
     runs-on: ubuntu-latest
@@ -85,6 +94,8 @@ jobs:
     needs: docker-build
     runs-on: ubuntu-latest
     steps:
+      - name: List Docker images
+        run: docker images
       - name: Push Docker image
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
