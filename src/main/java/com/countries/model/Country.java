@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Country {
     private String cca2;
-    private double population;
-    private double area;
+    private float population;
+    private float area;
 }

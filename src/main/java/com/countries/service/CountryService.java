@@ -9,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
+import static java.lang.Float.NaN;
+
 @Service
 public class CountryService {
     public static final String API_URL = "https://restcountries.com/v3.1/all?fields=cca2,population,area";
@@ -22,16 +24,16 @@ public class CountryService {
 
         return countriesData.stream()
                 .map(country -> {
-                    double density = 0;
-                    double population = country.getPopulation();
-                    double area = country.getArea();
+                    float density = 0f;
+                    float population = country.getPopulation();
+                    float area = country.getArea();
                     density = population / area;
                     if (Double.isNaN(density) || Double.isInfinite(density)) {
                         throw new DataProcessingException("Error processing country data for " + country.getCca2());
                     }
-                    return new CountryDensityDetail(country.getCca2(), density);
+                    return new CountryDensityDetail(country.getCca2(), density >= 0 ? density : NaN);
                 })
-                .sorted(Comparator.comparingDouble(CountryDensityDetail::getDensity).reversed())
+                .sorted(Comparator.comparingDouble(CountryDensityDetail::getPopulationDensity).reversed())
                 .toList();
     }
 }

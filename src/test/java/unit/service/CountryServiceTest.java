@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.lang.Float.NaN;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,6 +53,10 @@ class CountryServiceTest {
                 Arguments.of(
                         new Country[]{new Country("ZA", 2000, 1), new Country("AU", 2000, 40)},
                         List.of(new CountryDensityDetail("ZA", 2000), new CountryDensityDetail("AU", 50))
+                ),
+                Arguments.of(
+                        new Country[]{new Country("HU", -1, 1), new Country("AU", 2000, 40)},
+                        List.of(new CountryDensityDetail("HU", NaN), new CountryDensityDetail("AU", 50))
                 )
         );
     }

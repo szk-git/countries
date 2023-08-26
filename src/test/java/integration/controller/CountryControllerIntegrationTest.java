@@ -68,12 +68,8 @@ class CountryControllerIntegrationTest {
 
         ResponseEntity<CountryDensityResponse> response = testRestTemplate.getForEntity("/api/v1/countries/sortedByDensity", CountryDensityResponse.class);
 
-        // Assuming CountryDensityResponse has a getDetails() method or similar
         List<CountryDensityDetail> actualDetails = Objects.requireNonNull(response.getBody()).getCountriesSortedByDensity();
 
-        // Compare expected and actual details
         assertEquals(expected, actualDetails);
     }
-
-    // You can add more tests for other endpoints or scenarios as needed
 }
