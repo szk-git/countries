@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CountryDensityDetailDTO {
     private String cca2;
-    private double density;
+    private float populationDensity;
 }
