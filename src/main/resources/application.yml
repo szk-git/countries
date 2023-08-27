@@ -1,2 +1,10 @@
 server:
   port: 8080
+
+countries:
+  api:
+    base: https://restcountries.com/v3.1/
+    density:
+      fields: cca3,population,area
+    borders:
+      fields: cca3,borders,region

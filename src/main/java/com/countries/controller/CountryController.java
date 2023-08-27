@@ -1,8 +1,10 @@
 package com.countries.controller;
 
-import com.countries.model.CountryDensityDetail;
+import com.countries.model.dto.CountryDensityDetailDTO;
+import com.countries.model.dto.CountryMostBordersDTO;
 import com.countries.model.response.CountryDensityResponse;
-import com.countries.service.CountryService;
+import com.countries.model.response.CountryMostBordersResponse;
+import com.countries.service.CountryAnalyzer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,20 +18,24 @@ import java.util.List;
 @RequestMapping("/api/v1/countries")
 public class CountryController {
 
+    private final CountryAnalyzer countryAnalyzer;
+
     @Autowired
-    private CountryService countryService;
+    public CountryController(CountryAnalyzer countryAnalyzer) {
+        this.countryAnalyzer = countryAnalyzer;
+    }
 
     @GetMapping(value = "/sortedByDensity", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CountryDensityResponse> getSortedCountriesByDensity() {
-        List<CountryDensityDetail> sortedDetails = countryService.getSortedCountriesByDensity();
+        List<CountryDensityDetailDTO> sortedDetails = countryAnalyzer.getSortedCountriesByDensity();
         CountryDensityResponse response = new CountryDensityResponse(sortedDetails);
         return ResponseEntity.ok(response);
     }
 
-
-
-    @GetMapping("/asia-max-bordering-different-region")
-    public String getAsianCountryWithMostBorderingDifferentRegion() {
-        return "ASIA MAX BORDERING DIFFERENT REGION";
+    @GetMapping(value = "/asiaMaxBorderingDifferentRegion", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CountryMostBordersResponse> getAsianCountryWithMostBorderingDifferentRegion() {
+        CountryMostBordersDTO country = countryAnalyzer.getAsianCountryWithMostBorderingDifferentRegion();
+        CountryMostBordersResponse response = new CountryMostBordersResponse(country);
+        return ResponseEntity.ok(response);
     }
 }

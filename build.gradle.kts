@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.1.2"
@@ -31,3 +33,16 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks.test {
+	useJUnitPlatform()
+
+	testLogging {
+		events("passed", "skipped", "failed", "standardOut", "standardError")
+		exceptionFormat = TestExceptionFormat.FULL
+		showCauses = true
+		showExceptions = true
+		showStackTraces = true
+	}
+}
+
