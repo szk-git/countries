@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import static java.lang.Float.NaN;
 
 @Component
-public class CountryTransformer {
+public class CountryTransformerComponent {
 
     public CountryDensityDetailDTO toCountryDensityDetailDTO(Country country) {
         float population = country.getPopulation();

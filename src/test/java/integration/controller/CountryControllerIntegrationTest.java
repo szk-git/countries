@@ -5,7 +5,7 @@ import com.countries.model.dto.CountryDensityDetailDTO;
 import com.countries.model.dto.CountryMostBordersDTO;
 import com.countries.model.response.CountryDensityResponse;
 import com.countries.model.response.CountryMostBordersResponse;
-import com.countries.service.CountryAnalyzer;
+import com.countries.service.CountryAnalyzerService;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -33,12 +33,12 @@ class CountryControllerIntegrationTest {
     private TestRestTemplate testRestTemplate;
 
     @MockBean
-    private CountryAnalyzer countryAnalyzer;
+    private CountryAnalyzerService countryAnalyzerService;
 
     @ParameterizedTest
     @MethodSource("sortedCountriesByDensityProvider")
     void testGetSortedCountriesByDensity(List<CountryDensityDetailDTO> mockData, CountryDensityResponse expectedResponse) {
-        when(countryAnalyzer.getSortedCountriesByDensity()).thenReturn(mockData);
+        when(countryAnalyzerService.getSortedCountriesByDensity()).thenReturn(mockData);
 
         ResponseEntity<CountryDensityResponse> response = testRestTemplate.getForEntity("/api/v1/countries/sortedByDensity", CountryDensityResponse.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -48,7 +48,7 @@ class CountryControllerIntegrationTest {
     @ParameterizedTest
     @MethodSource("asianCountryWithMostBorderingDifferentRegionProvider")
     void testGetAsianCountryWithMostBorderingDifferentRegion(CountryMostBordersDTO mockData, CountryMostBordersResponse expectedResponse) {
-        when(countryAnalyzer.getAsianCountryWithMostBorderingDifferentRegion()).thenReturn(mockData);
+        when(countryAnalyzerService.getAsianCountryWithMostBorderingDifferentRegion()).thenReturn(mockData);
 
         ResponseEntity<CountryMostBordersResponse> response = testRestTemplate.getForEntity("/api/v1/countries/asiaMaxBorderingDifferentRegion", CountryMostBordersResponse.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());

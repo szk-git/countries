@@ -12,21 +12,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CountryAnalyzer {
+public class CountryAnalyzerService {
 
     private final CountryDataService countryDataService;
-    private final CountryTransformer countryTransformer;
+    private final CountryTransformerComponent countryTransformerComponent;
 
     @Autowired
-    public CountryAnalyzer(CountryDataService countryDataService, CountryTransformer countryTransformer) {
+    public CountryAnalyzerService(CountryDataService countryDataService, CountryTransformerComponent countryTransformerComponent) {
         this.countryDataService = countryDataService;
-        this.countryTransformer = countryTransformer;
+        this.countryTransformerComponent = countryTransformerComponent;
     }
 
     public List<CountryDensityDetailDTO> getSortedCountriesByDensity() {
         CountriesList countriesData = countryDataService.fetchAllCountriesForSortedCountriesByDensity();
         return countriesData.stream()
-                .map(countryTransformer::toCountryDensityDetailDTO)
+                .map(countryTransformerComponent::toCountryDensityDetailDTO)
                 .sorted(Comparator.comparingDouble(CountryDensityDetailDTO::getPopulationDensity).reversed())
                 .toList();
     }
@@ -56,7 +56,7 @@ public class CountryAnalyzer {
                 .max(Comparator.comparingInt(country -> countNonAsianBorders(country, nonAsianCountryCodes)))
                 .orElse(null);
 
-        CountryMostBordersDTO resultDTO = countryTransformer.mapToDTO(winner, nonAsianCountryCodes, allCountries);
+        CountryMostBordersDTO resultDTO = countryTransformerComponent.mapToDTO(winner, nonAsianCountryCodes, allCountries);
 
         if (resultDTO.getBordersWithRegion().isEmpty()) {
             return null;
