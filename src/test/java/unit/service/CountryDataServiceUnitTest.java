@@ -61,8 +61,28 @@ class CountryDataServiceUnitTest {
         return Stream.of(
                 Arguments.of(
                         new Country[]{new Country("US", 1000, 10, "North America", null), new Country("UK", 500, 5, "Europe", null)},
-                        "mockDensityApiUrl",
+                        "mockDensityApiUrl1",
                         new CountriesList(Arrays.asList(new Country("US", 1000, 10, "North America", null), new Country("UK", 500, 5, "Europe", null)))
+                ),
+                Arguments.of(
+                        new Country[]{new Country("CN", 1400, 14, "Asia", null), new Country("IN", 1300, 3, "Asia", null)},
+                        "mockDensityApiUrl2",
+                        new CountriesList(Arrays.asList(new Country("CN", 1400, 14, "Asia", null), new Country("IN", 1300, 3, "Asia", null)))
+                ),
+                Arguments.of(
+                        new Country[]{new Country("FR", 67, 1, "Europe", null), new Country("DE", 83, 2, "Europe", null)},
+                        "mockDensityApiUrl3",
+                        new CountriesList(Arrays.asList(new Country("FR", 67, 1, "Europe", null), new Country("DE", 83, 2, "Europe", null)))
+                ),
+                Arguments.of(
+                        new Country[]{new Country("BR", 210, 9, "South America", null), new Country("AR", 44, 3, "South America", null)},
+                        "mockDensityApiUrl4",
+                        new CountriesList(Arrays.asList(new Country("BR", 210, 9, "South America", null), new Country("AR", 44, 3, "South America", null)))
+                ),
+                Arguments.of(
+                        new Country[]{new Country("AU", 25, 8, "Oceania", null), new Country("NZ", 5, 1, "Oceania", null)},
+                        "mockDensityApiUrl5",
+                        new CountriesList(Arrays.asList(new Country("AU", 25, 8, "Oceania", null), new Country("NZ", 5, 1, "Oceania", null)))
                 )
         );
     }
@@ -71,8 +91,28 @@ class CountryDataServiceUnitTest {
         return Stream.of(
                 Arguments.of(
                         new Country[]{new Country("CN", 1000, 10, "Asia", Arrays.asList("IN")), new Country("IN", 500, 5, "Asia", null)},
-                        "mockBordersApiUrl",
+                        "mockBordersApiUrl1",
                         new CountriesList(Arrays.asList(new Country("CN", 1000, 10, "Asia", Arrays.asList("IN")), new Country("IN", 500, 5, "Asia", null)))
+                ),
+                Arguments.of(
+                        new Country[]{new Country("JP", 800, 7, "Asia", Arrays.asList("KR")), new Country("KR", 600, 6, "Asia", null)},
+                        "mockBordersApiUrl2",
+                        new CountriesList(Arrays.asList(new Country("JP", 800, 7, "Asia", Arrays.asList("KR")), new Country("KR", 600, 6, "Asia", null)))
+                ),
+                Arguments.of(
+                        new Country[]{new Country("RU", 1500, 20, "Asia", Arrays.asList("CN", "MN")), new Country("MN", 400, 5, "Asia", null)},
+                        "mockBordersApiUrl3",
+                        new CountriesList(Arrays.asList(new Country("RU", 1500, 20, "Asia", Arrays.asList("CN", "MN")), new Country("MN", 400, 5, "Asia", null)))
+                ),
+                Arguments.of(
+                        new Country[]{new Country("TH", 700, 8, "Asia", Arrays.asList("LA", "MM")), new Country("MM", 550, 6, "Asia", null)},
+                        "mockBordersApiUrl4",
+                        new CountriesList(Arrays.asList(new Country("TH", 700, 8, "Asia", Arrays.asList("LA", "MM")), new Country("MM", 550, 6, "Asia", null)))
+                ),
+                Arguments.of(
+                        new Country[]{new Country("ID", 1300, 15, "Asia", Arrays.asList("MY")), new Country("MY", 650, 7, "Asia", null)},
+                        "mockBordersApiUrl5",
+                        new CountriesList(Arrays.asList(new Country("ID", 1300, 15, "Asia", Arrays.asList("MY")), new Country("MY", 650, 7, "Asia", null)))
                 )
         );
     }
