@@ -1,24 +1,24 @@
 package com.countries.model.response;
 
-import com.countries.model.dto.CountryDensityDetailDTO;
+import com.countries.model.dto.CountryMostBordersDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountryDensityResponse {
+public class CountryMostBordersResponse {
 
-    private List<CountryDensityDetailDTO> countriesSortedByDensity;
+    private CountryMostBordersDTO countryByMostBordersFromAnotherRegion;
     private OffsetDateTime timestamp;
 
-    public CountryDensityResponse(List<CountryDensityDetailDTO> countriesSortedByDensity) {
-        this.countriesSortedByDensity = countriesSortedByDensity;
+    public CountryMostBordersResponse(CountryMostBordersDTO countryByMostBordersFromAnotherRegion) {
+        this.countryByMostBordersFromAnotherRegion = countryByMostBordersFromAnotherRegion;
         this.timestamp = LocalDateTime.now().atOffset(ZoneOffset.UTC);
     }
 }

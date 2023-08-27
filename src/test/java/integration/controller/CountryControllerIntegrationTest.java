@@ -1,75 +1,107 @@
 package integration.controller;
 
 import com.countries.CountriesApplication;
-import com.countries.model.Country;
-import com.countries.model.CountryDensityDetail;
+import com.countries.model.dto.CountryDensityDetailDTO;
+import com.countries.model.dto.CountryMostBordersDTO;
 import com.countries.model.response.CountryDensityResponse;
-import com.countries.service.CountryService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
+import com.countries.model.response.CountryMostBordersResponse;
+import com.countries.service.CountryAnalyzer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.mockito.Mockito.when;
 
+@AutoConfigureMockMvc
 @SpringBootTest(classes = CountriesApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CountryControllerIntegrationTest {
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
     private TestRestTemplate testRestTemplate;
 
-    private MockRestServiceServer mockServer;
+    @MockBean
+    private CountryAnalyzer countryAnalyzer;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @ParameterizedTest
+    @MethodSource("sortedCountriesByDensityProvider")
+    void testGetSortedCountriesByDensity(List<CountryDensityDetailDTO> mockData, CountryDensityResponse expectedResponse) {
+        when(countryAnalyzer.getSortedCountriesByDensity()).thenReturn(mockData);
 
-    @BeforeEach
-    public void setUp() {
-        mockServer = MockRestServiceServer.createServer(restTemplate);
+        ResponseEntity<CountryDensityResponse> response = testRestTemplate.getForEntity("/api/v1/countries/sortedByDensity", CountryDensityResponse.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertThat(response.getBody()).usingRecursiveComparison().ignoringFields("timestamp").isEqualTo(expectedResponse);
     }
 
-    static Stream<Arguments> countryDataProviderForSuccess() {
+    @ParameterizedTest
+    @MethodSource("asianCountryWithMostBorderingDifferentRegionProvider")
+    void testGetAsianCountryWithMostBorderingDifferentRegion(CountryMostBordersDTO mockData, CountryMostBordersResponse expectedResponse) {
+        when(countryAnalyzer.getAsianCountryWithMostBorderingDifferentRegion()).thenReturn(mockData);
+
+        ResponseEntity<CountryMostBordersResponse> response = testRestTemplate.getForEntity("/api/v1/countries/asiaMaxBorderingDifferentRegion", CountryMostBordersResponse.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertThat(response.getBody()).usingRecursiveComparison().ignoringFields("timestamp").isEqualTo(expectedResponse);
+    }
+
+    static Stream<Arguments> sortedCountriesByDensityProvider() {
         return Stream.of(
                 Arguments.of(
-                        new Country[]{new Country("US", 1000, 10), new Country("UK", 500, 5)},
-                        List.of(new CountryDensityDetail("US", 100), new CountryDensityDetail("UK", 100))
+                        List.of(new CountryDensityDetailDTO("US", 100), new CountryDensityDetailDTO("UK", 90)),
+                        new CountryDensityResponse(List.of(new CountryDensityDetailDTO("US", 100), new CountryDensityDetailDTO("UK", 90)))
                 ),
                 Arguments.of(
-                        new Country[]{new Country("CA", 1200, 12), new Country("FR", 600, 3)},
-                        List.of(new CountryDensityDetail("FR", 200), new CountryDensityDetail("CA", 100))
+                        List.of(new CountryDensityDetailDTO("CN", 110), new CountryDensityDetailDTO("IN", 105)),
+                        new CountryDensityResponse(List.of(new CountryDensityDetailDTO("CN", 110), new CountryDensityDetailDTO("IN", 105)))
+                ),
+                Arguments.of(
+                        List.of(new CountryDensityDetailDTO("FR", 70), new CountryDensityDetailDTO("DE", 65)),
+                        new CountryDensityResponse(List.of(new CountryDensityDetailDTO("FR", 70), new CountryDensityDetailDTO("DE", 65)))
+                ),
+                Arguments.of(
+                        List.of(new CountryDensityDetailDTO("BR", 120), new CountryDensityDetailDTO("AR", 115)),
+                        new CountryDensityResponse(List.of(new CountryDensityDetailDTO("BR", 120), new CountryDensityDetailDTO("AR", 115)))
+                ),
+                Arguments.of(
+                        List.of(new CountryDensityDetailDTO("AU", 80), new CountryDensityDetailDTO("NZ", 75)),
+                        new CountryDensityResponse(List.of(new CountryDensityDetailDTO("AU", 80), new CountryDensityDetailDTO("NZ", 75)))
                 )
         );
     }
 
-    @ParameterizedTest(name = "{index} - Test Countries By Density with countries: {0}")
-    @MethodSource("countryDataProviderForSuccess")
-    void testGetSortedCountriesByDensity(Country[] mockCountries, List<CountryDensityDetail> expected) throws Exception {
-        String mockCountriesJson = objectMapper.writeValueAsString(mockCountries); // Convert to JSON
-
-        mockServer.expect(requestTo(CountryService.API_URL))
-                .andRespond(withSuccess(mockCountriesJson, MediaType.APPLICATION_JSON));
-
-        ResponseEntity<CountryDensityResponse> response = testRestTemplate.getForEntity("/api/v1/countries/sortedByDensity", CountryDensityResponse.class);
-
-        List<CountryDensityDetail> actualDetails = Objects.requireNonNull(response.getBody()).getCountriesSortedByDensity();
-
-        assertEquals(expected, actualDetails);
+    static Stream<Arguments> asianCountryWithMostBorderingDifferentRegionProvider() {
+        return Stream.of(
+                Arguments.of(
+                        new CountryMostBordersDTO("CN", "Asia", Map.of("RU", "Europe")),
+                        new CountryMostBordersResponse(new CountryMostBordersDTO("CN", "Asia", Map.of("RU", "Europe")))
+                ),
+                Arguments.of(
+                        new CountryMostBordersDTO("IN", "Asia", Map.of("AF", "Asia", "NP", "Asia")),
+                        new CountryMostBordersResponse(new CountryMostBordersDTO("IN", "Asia", Map.of("AF", "Asia", "NP", "Asia")))
+                ),
+                Arguments.of(
+                        new CountryMostBordersDTO("MN", "Asia", Map.of("RU", "Europe", "CN", "Asia")),
+                        new CountryMostBordersResponse(new CountryMostBordersDTO("MN", "Asia", Map.of("RU", "Europe", "CN", "Asia")))
+                ),
+                Arguments.of(
+                        new CountryMostBordersDTO("TR", "Asia", Map.of("BG", "Europe", "GR", "Europe")),
+                        new CountryMostBordersResponse(new CountryMostBordersDTO("TR", "Asia", Map.of("BG", "Europe", "GR", "Europe")))
+                ),
+                Arguments.of(
+                        new CountryMostBordersDTO("KZ", "Asia", Map.of("RU", "Europe")),
+                        new CountryMostBordersResponse(new CountryMostBordersDTO("KZ", "Asia", Map.of("RU", "Europe")))
+                )
+        );
     }
 }
