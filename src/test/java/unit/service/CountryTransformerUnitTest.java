@@ -38,7 +38,7 @@ class CountryTransformerUnitTest {
 
         CountryDensityDetailDTO dto = transformer.toCountryDensityDetailDTO(country);
         assertEquals(country.getCca3(), dto.getCca2());
-        assertEquals(expectedDensity, dto.getDensity());
+        assertEquals(expectedDensity, dto.getPopulationDensity());
     }
 
     @ParameterizedTest(name = "{index} - Testing borders for country: {0}")

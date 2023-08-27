@@ -27,7 +27,7 @@ public class CountryAnalyzer {
         CountriesList countriesData = countryDataService.fetchAllCountriesForSortedCountriesByDensity();
         return countriesData.stream()
                 .map(countryTransformer::toCountryDensityDetailDTO)
-                .sorted(Comparator.comparingDouble(CountryDensityDetailDTO::getDensity).reversed())
+                .sorted(Comparator.comparingDouble(CountryDensityDetailDTO::getPopulationDensity).reversed())
                 .toList();
     }
 
