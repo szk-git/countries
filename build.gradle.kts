@@ -29,6 +29,7 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation(group = "io.springfox", name = "springfox-boot-starter", version = "3.0.0")
+	implementation("org.aspectj:aspectjweaver:1.9.7")
 }
 
 tasks.withType<Test> {
