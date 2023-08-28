@@ -9,6 +9,10 @@ countries:
     borders:
       fields: cca3,borders,region
 
+logging:
+  level:
+    org.springframework.web.servlet.PageNotFound: ERROR
+
 spring:
   profiles:
     active: test
