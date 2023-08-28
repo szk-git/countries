@@ -8,3 +8,7 @@ countries:
       fields: cca3,population,area
     borders:
       fields: cca3,borders,region
+
+spring:
+  profiles:
+    active: test

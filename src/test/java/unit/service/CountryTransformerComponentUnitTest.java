@@ -4,7 +4,7 @@ import com.countries.model.Country;
 import com.countries.model.CountriesList;
 import com.countries.model.dto.CountryDensityDetailDTO;
 import com.countries.model.dto.CountryMostBordersDTO;
-import com.countries.service.CountryTransformer;
+import com.countries.service.CountryTransformerComponent;
 import com.countries.utils.exception.DataProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,13 +19,13 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CountryTransformerUnitTest {
+class CountryTransformerComponentUnitTest {
 
-    private CountryTransformer transformer;
+    private CountryTransformerComponent transformer;
 
     @BeforeEach
     void setUp() {
-        transformer = new CountryTransformer();
+        transformer = new CountryTransformerComponent();
     }
 
     @ParameterizedTest(name = "{index} - Testing density calculation for country: {0}")

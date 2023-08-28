@@ -4,9 +4,9 @@ import com.countries.model.CountriesList;
 import com.countries.model.Country;
 import com.countries.model.dto.CountryDensityDetailDTO;
 import com.countries.model.dto.CountryMostBordersDTO;
-import com.countries.service.CountryAnalyzer;
+import com.countries.service.CountryAnalyzerService;
 import com.countries.service.CountryDataService;
-import com.countries.service.CountryTransformer;
+import com.countries.service.CountryTransformerComponent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,16 +24,16 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-class CountryAnalyzerUnitTest {
+class CountryAnalyzerServiceUnitTest {
 
     @InjectMocks
-    private CountryAnalyzer countryAnalyzer;
+    private CountryAnalyzerService countryAnalyzerService;
 
     @Mock
     private CountryDataService countryDataService;
 
     @Mock
-    private CountryTransformer countryTransformer;
+    private CountryTransformerComponent countryTransformerComponent;
 
     @BeforeEach
     void setUp() {
@@ -45,10 +45,10 @@ class CountryAnalyzerUnitTest {
     void testGetSortedCountriesByDensity(CountriesList mockCountries, List<CountryDensityDetailDTO> expected) {
         when(countryDataService.fetchAllCountriesForSortedCountriesByDensity()).thenReturn(mockCountries);
         mockCountries.getCountries().forEach(country -> {
-            when(countryTransformer.toCountryDensityDetailDTO(country)).thenReturn(new CountryDensityDetailDTO(country.getCca3(), country.getPopulation() / country.getArea()));
+            when(countryTransformerComponent.toCountryDensityDetailDTO(country)).thenReturn(new CountryDensityDetailDTO(country.getCca3(), country.getPopulation() / country.getArea()));
         });
 
-        List<CountryDensityDetailDTO> result = countryAnalyzer.getSortedCountriesByDensity();
+        List<CountryDensityDetailDTO> result = countryAnalyzerService.getSortedCountriesByDensity();
 
         assertEquals(expected, result);
     }
@@ -59,7 +59,7 @@ class CountryAnalyzerUnitTest {
         when(countryDataService.fetchAllCountriesForAsianCountryWithMostBorderingDifferentRegion()).thenReturn(mockCountries);
         mockCountries.getCountries().forEach(country -> {
             Set<String> nonAsianCountries = mockCountries.getCountries().stream().filter(c -> !"Asia".equalsIgnoreCase(c.getRegion())).map(Country::getCca3).collect(Collectors.toSet());
-            when(countryTransformer.mapToDTO(country, nonAsianCountries, mockCountries)).thenReturn(
+            when(countryTransformerComponent.mapToDTO(country, nonAsianCountries, mockCountries)).thenReturn(
                     new CountryMostBordersDTO(country.getCca3(), country.getRegion(), country.getBorders().stream().filter(nonAsianCountries::contains).collect(Collectors.toMap(border -> border, border -> {
                         Country borderCountry = mockCountries.getCountries().stream().filter(c -> c.getCca3().equals(border)).findFirst().orElse(null);
                         return borderCountry != null ? borderCountry.getRegion() : null;
@@ -67,7 +67,7 @@ class CountryAnalyzerUnitTest {
             );
         });
 
-        CountryMostBordersDTO result = countryAnalyzer.getAsianCountryWithMostBorderingDifferentRegion();
+        CountryMostBordersDTO result = countryAnalyzerService.getAsianCountryWithMostBorderingDifferentRegion();
 
         assertEquals(expected, result);
     }
