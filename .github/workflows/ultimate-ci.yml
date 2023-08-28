@@ -76,11 +76,8 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Grant execute permission for build-docker.sh
-        run: chmod +x build-docker.sh
       - name: Build Docker image
-        run: |
-          ./build-docker.sh
+        run: docker build -t countries-image .
       - name: Push Docker image
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
