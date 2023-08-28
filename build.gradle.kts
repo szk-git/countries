@@ -2,7 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
 	java
-	id("org.springframework.boot") version "2.4.2"
+	id("org.springframework.boot") version "2.5.6"
 	id("io.spring.dependency-management") version "1.1.2"
 }
 
@@ -25,8 +25,8 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	compileOnly("org.projectlombok:lombok:1.18.28")
-	annotationProcessor("org.projectlombok:lombok:1.18.28")
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation(group = "io.springfox", name = "springfox-boot-starter", version = "3.0.0")
 }
